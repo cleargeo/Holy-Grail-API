@@ -1,57 +1,43 @@
-# Semantic Sieve Engine v1.1
+# Holy Grail Verification API v1.0
 
-## What it is
+> Ancient structure analysis, Pythagorean comma verification,
+> Serenal Framework consistency check.
 
-A priority-based event routing and monitoring system for HermIt categorizes events into three- **Resonance** (silent, self-healing baseline)
-- **Harmonic Shift** (strategic trends, no notification)
-- **Foundation** (critical anomalies requiring your attention)
+## Quick Start
 
-## Architecture
-
-```
-Monitored Resources -> Sieve Engine -> Tier Router -> Delivery
-                                                     |
-                                                     v
-                                              causatio_state.json  (Foundation events only)
-                                                     |
-                                                     v
-                                              --resolve <id> -> resolved
-                                              TTL auto-resolve after 300s
+```bash
+pip install flask
+python api_grail.py --port 5002
 ```
 
-## Commands
+Then visit `http://localhost:5002/api/v1/constants`.
 
-| Command | Description |
-|---------|-------------|
-| (none) | Run all checks, show Foundation alerts |
-| --check-foundation | Show current Foundation alerts |
-| --check-harmonic | Show harmonic shift digest |
-| --report [foundation\|harmonic\|all] | Full tier report |
-| --recent-foundation | Unresolved Foundation events (last 24h) |
-| --resolve <event_id> | Mark as resolved |
-| --event <json> | Inject manual event |
-| --full | Full check across all tiers |
-| --audit | Causation state audit |
-| --reset-state | Reset all state files |
+## API Endpoints
 
-## Files
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| /api/v1/health | GET | Service status |
+| /api/v1/constants | GET | All grail constants (computed live) |
+| /api/v1/comma | GET | Pythagorean comma + proof |
+| /api/v1/comma/verify | GET | Verify 531441/524288 numerically |
+| /api/v1/structures | GET | List verified ancient structures |
+| /api/v1/structure/analyze | POST | Analyze any structure's harmonic ratios |
+| /api/v1/serenal/check | GET | Serenal Framework consistency |
+| /api/v1/temple/simulate | POST | Simulate room acoustics (JSON: cubits, type, mode) |
 
-- ~/.hermes/scripts/semantic_sieve/sieve_engine.py (main engine)
-- ~/.hermes/scripts/semantic_sieve/config.yaml (configuration)
-- ~/.hermes/scripts/semantic_sieve/causation_state.json (Foundation event DB)
-- ~/.hermes/scripts/semantic_sieve/sieve_state.json (health check state)
-- ~/.hermes/logs/resonance.log (Tier 1 log)
-- ~/.hermes/logs/foundation_critical.log (Tier 3 log)
-- ~/.hermes/logs/harmonic_digest.md (Tier 2 digest)
+## Try
 
-## Monitoring Targets
+```bash
+# Verify the Pythagorean comma
+curl http://localhost:5002/api/v1/comma/verify
 
-- WSL memory (/proc/meminfo)
-- Windows C: disk (wmic via cmd.exe)
-- Network hosts (ping)
-- GitHub repos (gh api, every ~2.5 hours, via cmd.exe)
-- Home Assistant (disabled pending HA token)
+# Analyze the Great Pyramid
+curl -X POST http://localhost:5002/api/v1/structure/analyze \
+  -H Content-Type:application/json \
+  -d '{"name":"pyramid","dimensions":{"base":440,"height":280}}'
 
-## Resolution Policy
-
-Foundation events auto-resolve 300s (5 min) after creation if not re-triggered.
+# Simulate Solomon's Temple acoustics (royal cubit)
+curl -X POST http://localhost:5002/api/v1/temple/simulate \
+  -H Content-Type:application/json \
+  -d '{"cubits":20,"type":"royal","mode":"acoustics"}'
+```
