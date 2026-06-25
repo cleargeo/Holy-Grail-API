@@ -1,0 +1,127 @@
+# Semantic Sieve Configuration
+# Sovereign Mesh - Event Routing & Alert Tiers
+# Maps to: Resonance (silent), Harmonic Shift (glimmer), Foundation (immediate)
+
+sieve:
+  # Tier 1: Resonance - Log only, no notification
+  resonance:
+    enabled: true
+    description: "Self-healing, routine ops, protocol handshakes"
+    actions:
+      - log_to_file
+    log_path: "~/.hermes/logs/resonance.log"
+    # Events that always stay here:
+    always_responsive:
+      - "cron job completed successfully"
+      - "HA entity state unchanged"
+      - "disk usage < 80%"
+      - "memory usage < 85%"
+      - "git status clean"
+      - "file count stable"
+
+  # Tier 2: Harmonic Shift - Periodic digest summary
+  harmonic_shift:
+    enabled: true
+    description: "Macro trends, significant changes, weekly/monthly patterns"
+    actions:
+      - add_to_digest
+    digest_schedule: "0 9,17 * * *"  # 9am + 5pm daily
+    digest_path: "~/.hermes/logs/harmonic_digest.md"
+    # Events that trigger glimmer:
+    triggers:
+      - "repo archived or branch protection change"
+      - "new device discovered on network"
+      - "disk usage trending up (was <70%, now >75%)"
+      - "new PR opened requiring review"
+      - "HA integration new entity added"
+      - "codebase size changed significantly (>10%)"
+
+  # Tier 3: Foundation - Immediate notification + action
+  foundation:
+    enabled: true
+    description: "Critical anomalies, security, data loss, alignment required"
+    actions:
+      - notify_immediate
+      - log_critical
+    notify_channels:
+      - "current_session"
+    log_path: "~/.hermes/logs/foundation_critical.log"
+    # Events that always escalate:
+    triggers:
+      - "service unreachable (HA, network drive)"
+      - "disk usage > 90%"
+      - "memory usage > 95%"
+      - "PR with merge conflicts on protected branch"
+      - "unauthorized git push or force push detected"
+      - "security alert from GitHub Dependabot"
+      - "backup failure"
+      - "data loss or file corruption detected"
+
+# Monitored Resources
+targets:
+  github:
+    repos:
+      - "cleargeo/CVG-GhostGraph"
+      - "cleargeo/CVG-Ghost-StarFleet"
+      - "cleargeo/CVG-Ghost-Horde"
+      - "cleargeo/CVG-Ghost-Fleet"
+      - "cleargeo/CVG-Ghost-Council"
+      - "cleargeo/CVG-Glast-Armada"
+      - "cleargeo/CVG-Ghost-Swarm"
+      - "cleargeo/CVG-Ghost-Graph"
+      - "cleargeo/Universal-Map"
+      - "cleargeo/Serenal-Binary-Framework"
+      - "cleargeo/flowsint"
+      - "cleargeo/cvg-neuron-public"
+      - "cleargeo/CVG-Neuron"
+      - "cleargeo/CVG-Geoserver-Raster"
+      - "cleargeo/cvg-hive"
+      - "cleargeo/collector"
+      - "cleargeo/CVG-Storm-Surge-Wizard"
+      - "cleargeo/CVG-SLR-Wizard"
+      - "cleargeo/CVG-Rainfall-Wizard"
+      - "cleargeo/CVG-Geoserver-Vector"
+      - "cleargeo/Cleargeo"
+    orgs:
+      - "cleargeo"
+    check_items:
+      - "failed CI checks"
+      - "unmerged PRs > 7 days old"
+      - "security alerts"
+      - "uncommitted local changes"
+      - "unpushed commits"
+
+  home_assistant:
+    base_url: "http://192.168.1.21:8123"
+    token_env: "HA_LONG_LIVED_TOKEN"
+    enabled: false  # Set to true and set HA_LONG_LIVED_TOKEN when token is available
+    check_items:
+      - "entity_unavailable"
+      - "new_entity_added"
+      - "battery_low (<20%)"
+      - "sensor_anomaly (sudden spike/drop)"
+
+  system:
+    wsl_instance: "localhost"
+    disk_paths:
+      - "C:\\"
+    thresholds:
+      disk_warning: 80
+      disk_critical: 90
+      memory_warning: 85
+      memory_critical: 95
+      cpu_warning: 80
+      cpu_critical: 95
+
+  network:
+    hosts:
+      - "192.168.1.21"  # HA
+      - "192.168.1.1"   # Gateway
+    drives:
+      - "Z:"  # znet-media
+
+# Pulse Configuration
+pulse:
+  bpm: 144  # Metaphorical - represents health check frequency
+  heartbeat_interval_ms: 900000  # 15 minutes
+  retry_delays: [30, 60, 300, 900]  # seconds
