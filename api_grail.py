@@ -310,6 +310,43 @@ def debug_post():
         "method": request.method,
     })
 
+@app.route("/api/v1/tuning/comma-distributed", methods=["GET"])
+def tuning_comma_distributed():
+    """Return the comma-distributed tuning table."""
+    import math as _math
+    comma = 1200 * _math.log2(531441 / 524288)
+    e_absorb = 24.0
+    sigma_absorb = 4.4
+    remaining = comma - e_absorb - sigma_absorb
+    per_fifth = remaining / 12
+    tempered_fifth = 702.0 - per_fifth  # 702 = 1200*log2(3/2) approx
+
+    chain = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'G#', 'D#', 'A#', 'F']
+    tuning = {}
+    for i, note in enumerate(chain):
+        tuning[note] = round((i * tempered_fifth) % 1200, 3)
+
+    # Sorted chromatic
+    note_order = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+    sorted_tuning = {n: tuning.get(n, 0) for n in note_order if n in tuning}
+
+    return jsonify({
+        "system": "comma-distributed",
+        "framework_constants": {
+            "E_absorption_cents": e_absorb,
+            "Sigma_absorption_cents": sigma_absorb,
+            "total_absorbed": e_absorb + sigma_absorb,
+            "comma_total": round(comma, 4),
+            "remaining_distributed": round(remaining, 4),
+        },
+        "tempered_fifth_cents": round(tempered_fifth, 4),
+        "pure_fifth_cents": round(1200 * _math.log2(3/2), 4),
+        "tet_fifth_cents": 700.0,
+        "comma_closure_error": round(12 * tempered_fifth - 7 * 1200, 6),
+        "tuning_table": sorted_tuning,
+    })
+
+
 if __name__ == "__main__":
     port = 5002
     if "--port" in sys.argv:
